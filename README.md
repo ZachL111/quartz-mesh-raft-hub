@@ -1,68 +1,40 @@
 # quartz-mesh-raft-hub
 
-`quartz-mesh-raft-hub` is a focused SQL codebase around implement an SQL distributed systems project for raft policy evaluation, using deny and allow fixtures and explainable decision traces. It is meant to be easy to inspect, run, and extend without a hosted service.
-
-## Quartz Mesh Raft Hub Walkthrough
-
-I would read the project from the outside in: command, fixture, model, then roadmap. That keeps the distributed systems idea grounded in files that can be checked locally.
-
-## How It Is Put Together
-
-The design is intentionally direct: parse or construct a signal, score it, classify it, and verify the expected branch. This makes the repository useful for studying distributed systems behavior without needing a service or database unless the language project itself is SQL. The SQL project uses sqlite fixtures, views, and assertions to keep query behavior inspectable.
+`quartz-mesh-raft-hub` is a compact SQL repository for distributed systems, centered on this goal: Implement an SQL distributed systems project for raft policy evaluation, using deny and allow fixtures and explainable decision traces.
 
 ## Reason For The Project
 
-This project keeps the domain idea close to the tests. That makes it useful as a reference implementation, a small experiment, or a starting point for a more specialized tool.
+This is intentionally local and self-contained so it can be inspected without credentials, services, or seeded history.
 
-## Capabilities
+## Quartz Mesh Raft Hub Review Notes
 
-- Uses fixture data to keep quorum behavior changes visible in code review.
-- Includes extended examples for lease timing, including `recovery` and `degraded`.
-- Documents message ordering tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
+`baseline` and `stress` are the cases worth reading first. They show the optimistic and cautious ends of the fixture.
 
-## Data Notes
+## What It Does
 
-The extended cases are not random smoke tests. `degraded` keeps pressure on the review path, while `recovery` shows the model when capacity and weight are strong enough to clear the threshold.
+- `fixtures/domain_review.csv` adds cases for quorum health and lease drift.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/quartz-mesh-raft-walkthrough.md` walks through the case spread.
+- The SQL code includes a review path for `quorum health` and `lease drift`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Where Things Live
+## How It Is Put Together
 
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-- `schema.sql`: sqlite schema and view definitions
+The repository has two validation layers: the original compact policy fixture and the domain review fixture. They are separate so one can change without hiding failures in the other.
 
-## Getting It Running
+The SQL checks add a separate view over the domain review fixture.
 
-Install SQL and run the commands from the repository root. The project does not need credentials or a hosted service.
-
-## Command Examples
+## Run It
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Check It
 
-## Check The Work
+The check exercises the source code and the review fixture. `baseline` is the high score at 205; `stress` is the low score at 145.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Boundaries
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Tradeoffs
-
-The repository favors determinism over breadth. It does not pull live data, keep secrets, or depend on network access for verification.
-
-## Possible Extensions
-
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add one more distributed systems fixture that focuses on a malformed or borderline input.
+The repository is intentionally scoped to local checks. I would expand it by adding adversarial fixtures before adding features.
