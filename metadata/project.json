@@ -1,0 +1,32 @@
+{
+  "index": 142,
+  "phase": 2,
+  "batch": 16,
+  "name": "quartz-mesh-raft-hub",
+  "planned_name": "quartz-mesh-raft-hub",
+  "language": "SQL",
+  "category": "Distributed systems",
+  "goal": "Implement an SQL distributed systems project for raft policy evaluation, using deny and allow fixtures and explainable decision traces.",
+  "repository_url": "https://github.com/ZachL111/quartz-mesh-raft-hub",
+  "verification_command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1",
+  "model": {
+    "inputs": [
+      "demand",
+      "capacity",
+      "latency",
+      "risk",
+      "weight"
+    ],
+    "threshold": 156,
+    "risk_penalty": 5,
+    "latency_penalty": 3,
+    "weight_bonus": 3,
+    "decision_rule": "accept when score is greater than or equal to threshold, otherwise review"
+  },
+  "quality_gates": [
+    "readme constraint scan",
+    "fixture presence check",
+    "metadata JSON parse",
+    "language verifier"
+  ]
+}
